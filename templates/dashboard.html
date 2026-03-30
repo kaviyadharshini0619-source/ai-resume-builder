@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Resume Builder</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+h2,h3,h4{color:#0d6efd;}
+</style>
+</head>
+
+<body class="container mt-4">
+
+<h2 class="text-center mb-4">Smart AI Resume Builder</h2>
+
+<form action="/generate" method="post">
+
+<h4>Personal Details</h4>
+<input class="form-control mb-2" name="name" placeholder="Full Name">
+<input class="form-control mb-2" name="email" placeholder="Email">
+<input class="form-control mb-2" name="phone" placeholder="Phone">
+<input class="form-control mb-2" name="address" placeholder="Address">
+<input class="form-control mb-3" name="linkedin" placeholder="LinkedIn">
+
+<h4>Education</h4>
+<input class="form-control mb-2" name="degree" placeholder="Degree">
+<input class="form-control mb-2" name="college" placeholder="College">
+<input class="form-control mb-3" name="year" placeholder="Year">
+
+<h4>Schooling Details</h4>
+<textarea class="form-control mb-3" name="schooling"></textarea>
+
+<h4>Experience</h4>
+<input class="form-control mb-2" name="job" placeholder="Job Title">
+<input class="form-control mb-2" name="company" placeholder="Company">
+<textarea class="form-control mb-3" name="description" id="description"></textarea>
+
+
+
+<h4>Certifications</h4>
+<textarea class="form-control mb-3" name="certifications"></textarea>
+
+<h4>Awards & Achievements</h4>
+<textarea class="form-control mb-3" name="awards"></textarea>
+
+<h4>Skills</h4>
+<textarea class="form-control mb-3" name="skills"></textarea>
+<button type="button" class="btn btn-success mb-3" onclick="getSuggestions()">
+🤖 AI Suggestion
+</button>
+<div id="suggestions" class="mb-3 text-primary"></div>
+
+<div class="text-center">
+<button class="btn btn-primary px-4">Generate Resume</button>
+</div>
+
+</form>
+
+<script>
+function getSuggestions() {
+    let text = document.getElementById("description").value;
+
+    fetch("/suggest", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "description=" + encodeURIComponent(text)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.suggestions.length === 0){
+            document.getElementById("suggestions").innerHTML =
+            "✔ Your description looks good";
+        }else{
+            document.getElementById("suggestions").innerHTML =
+            "<b>AI Suggestions:</b><br>" +
+            data.suggestions.map(s => "• " + s).join("<br>");
+        }
+    });
+}
+</script>
+
+</body>
+</html>
